@@ -14,63 +14,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-pragma solidity ^0.4.9;
+pragma solidity ^0.4.8;
 
-import 'ds-auth/auth.sol';
+import 'ds-value/value.sol';
 
-contract DSICache is DSIStore {
-    function set(bytes32 key, bytes32 value, uint expiry);
-    function tryGet( bytes32 key ) constant returns (bytes32 value, uint expiry);
-}
-
-contract DSCacheEvents {
-    event LogCacheChange( bytes32 indexed key, bytes32 indexed value, uint expiration );
-}
-
-
-contract DSCache is DSICache
-                  , DSCacheEvents
-                  , DSAuth
+contract DSCache is DSValue
 {
-    struct ExpiringNullableValue {
-        bytes32 _value;
-        uint    _expiry; // TODO does uint256(-1) work?
+    uint128 zzz;
+//  from DSValue:
+//    bool    has;
+//    bytes32 val;
+    function peek() constant returns (bytes32, bool) {
+        return (val,has);
     }
-    mapping( bytes32 => NullableValue ) _storage;
-
-    function set(bytes32 key, bytes32 value )
-             auth
-    {
-        _storage[key] = ExpiringNullableValue(value, uint(-1));
-        LogStoreChange( key, value, uint(-1) );
+    function read() constant returns (bytes32) {
+        var (wut, has) = peek();
+        assert(now < zzz);
+        assert(has);
+        return wut;
     }
-    function unset(bytes32 key)
-             auth
-    {
-        _storage[key] = ExpiringNullableValue(0x0, 0);
-        LogStoreChange( key, 0x0, 0 );
+    function prod(bytes32 wut, uint128 Zzz) {
+        poke(wut);
+        zzz = Zzz;
     }
-
-    function has(bytes32 key)
-             constant
-             returns (bool)
-    {
-        return _storage[key]._expiry >= now;
+    function poke(bytes32 wut) auth {
+        val = wut;
+        has = true;
     }
-
-    // Throws.
-    function get( bytes32 key )
-             constant
-             returns (bytes32 value)
-    {
-        var (val, expiry) = tryGet(key);
-        if( expiry < now ) throw;
-        return val;
-    }
-
-    function tryGet( bytes32 key ) constant returns (bytes32 value, uint expiry ) {
-        var nvalue = _storage[key];
-        return (nvalue._value, nvalue._expiry);
+    function void() auth { // unset the value
+        has = false;
     }
 
 }
