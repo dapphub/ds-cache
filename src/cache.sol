@@ -20,7 +20,7 @@ import 'ds-value/value.sol';
 
 contract DSCache is DSValue
 {
-    uint128 zzz;
+    uint128 public zzz;
 //  from DSValue:
 //    bool    has;
 //    bytes32 val;
