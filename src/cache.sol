@@ -25,7 +25,7 @@ contract DSCache is DSValue
 //    bool    has;
 //    bytes32 val;
     function peek() constant returns (bytes32, bool) {
-        return (val,has);
+        return (val, has && now < zzz);
     }
     function read() constant returns (bytes32) {
         var (wut, has) = peek();
