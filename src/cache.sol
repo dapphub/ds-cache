@@ -22,8 +22,8 @@ contract DSCache is DSValue
 {
     uint128 public zzz;
 //  from DSValue:
-//    bool    has;
-//    bytes32 val;
+//  bool    has;
+//  bytes32 val;
     function peek() constant returns (bytes32, bool) {
         return (val, has && now < zzz);
     }
@@ -33,16 +33,18 @@ contract DSCache is DSValue
         assert(has);
         return wut;
     }
-    function prod(bytes32 wut, uint128 Zzz) {
-        poke(wut);
-        zzz = Zzz;
-    }
-    function poke(bytes32 wut) auth {
+    function prod(bytes32 wut, uint128 Zzz) note auth {
         val = wut;
         has = true;
+        zzz = Zzz;
     }
-    function void() auth { // unset the value
-        has = false;
-    }
+    // from DSValue:
+    // function poke(bytes32 wut) note auth {
+    //     val = wut;
+    //     has = true;
+    // }
+    // function void() note auth { // unset the value
+    //     has = false;
+    // }
 
 }
