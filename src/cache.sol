@@ -34,9 +34,8 @@ contract DSCache is DSValue
         return wut;
     }
     function prod(bytes32 wut, uint128 Zzz) note auth {
-        val = wut;
-        has = true;
         zzz = Zzz;
+        poke(wut);
     }
     // from DSValue:
     // function poke(bytes32 wut) note auth {
