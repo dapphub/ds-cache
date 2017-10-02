@@ -24,16 +24,16 @@ contract DSCache is DSValue
 //  from DSValue:
 //  bool    has;
 //  bytes32 val;
-    function peek() constant returns (bytes32, bool) {
+    function peek() public view returns (bytes32, bool) {
         return (val, has && now < zzz);
     }
-    function read() constant returns (bytes32) {
+    function read() public view returns (bytes32) {
         var (wut, has) = peek();
         assert(now < zzz);
         assert(has);
         return wut;
     }
-    function prod(bytes32 wut, uint128 Zzz) note auth {
+    function prod(bytes32 wut, uint128 Zzz) public note auth {
         zzz = Zzz;
         poke(wut);
     }
