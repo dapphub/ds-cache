@@ -21,30 +21,26 @@ import 'ds-value/value.sol';
 
 contract DSCache is DSValue
 {
-    uint128 public zzz;
-//  from DSValue:
-//  bool    has;
-//  bytes32 val;
-    function peek() public view returns (bytes32, bool) {
-        return (val, has && now < zzz);
+    uint public zzz;
+
+    function time() internal view returns (uint) {
+        return block.timestamp;
     }
+
+    function peek() public view returns (bytes32, bool) {
+        return (val, has && time() < zzz);
+    }
+
     function read() public view returns (bytes32) {
         var (wut, has) = peek();
-        assert(now < zzz);
+        assert(time() < zzz);
         assert(has);
         return wut;
     }
-    function prod(bytes32 wut, uint128 Zzz) public note auth {
+
+    function prod(bytes32 wut, uint Zzz) public note auth {
         zzz = Zzz;
         poke(wut);
     }
-    // from DSValue:
-    // function poke(bytes32 wut) note auth {
-    //     val = wut;
-    //     has = true;
-    // }
-    // function void() note auth { // unset the value
-    //     has = false;
-    // }
 
 }
