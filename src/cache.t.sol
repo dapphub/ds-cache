@@ -13,24 +13,21 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity ^0.4.13;
-
+pragma solidity >0.4.23;
 
 import "ds-test/test.sol";
 import "./cache.sol";
 
 contract TestUser {
-
-    function doProd(DSCache cache, bytes32 wut, uint Zzz) {
+    function doProd(DSCache cache, bytes32 wut, uint Zzz) public {
         cache.prod(wut, Zzz);
     }
 }
 
 contract TestableCache is DSCache {
-
     uint public localTime;
 
-    function TestableCache() public {
+    constructor() public {
         localTime = now;
     }
 
@@ -44,7 +41,6 @@ contract TestableCache is DSCache {
 }
 
 contract DSCacheTest is DSTest {
-
     TestableCache cache;
     bytes32 data = bytes32("test");
     TestUser user;
@@ -63,7 +59,7 @@ contract DSCacheTest is DSTest {
     }
 
     function testHas() public {
-        var (wut, has) = cache.peek();
+        (bytes32 wut, bool has) = cache.peek();
         assertTrue(!has);
         cache.prod(data, now + 1);
         (wut, has) = cache.peek();
@@ -75,13 +71,13 @@ contract DSCacheTest is DSTest {
 
     function testPeek() public {
         cache.prod(data, now + 1);
-        var (wut, has) = cache.peek();
+        (bytes32 wut,) = cache.peek();
         assertEq(data, wut);
     }
 
     function testRead() public {
         cache.prod(data, now + 1);
-        var wut = cache.read();
+        (bytes32 wut,) = cache.peek();
         assertEq(data, wut);
     }
 
@@ -91,7 +87,7 @@ contract DSCacheTest is DSTest {
         cache.read();
     }
 
-    function testFailUninitializedRead() public {
+    function testFailUninitializedRead() public view {
         cache.read();
     }
 
@@ -105,7 +101,7 @@ contract DSCacheTest is DSTest {
         cache.prod(data, now + 1);
         cache.addTime(2);
         cache.poke(bytes32("stuff"));
-        var (wut, has) = cache.peek();
+        (bytes32 wut, bool has) = cache.peek();
         assertEq(wut, bytes32("stuff"));
         assertTrue(!has);
     }
@@ -113,9 +109,8 @@ contract DSCacheTest is DSTest {
     function testVoid() public {
         cache.prod(data, now + 1);
         cache.void();
-        var (wut, has) = cache.peek();
+        (bytes32 wut, bool has) = cache.peek();
         assertEq(wut, data);
         assertTrue(!has);
     }
-
 }

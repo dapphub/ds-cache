@@ -15,12 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-pragma solidity ^0.4.13;
+pragma solidity >0.4.23;
 
 import 'ds-value/value.sol';
 
-contract DSCache is DSValue
-{
+contract DSCache is DSValue {
     uint public zzz;
 
     function time() internal view returns (uint) {
@@ -32,7 +31,7 @@ contract DSCache is DSValue
     }
 
     function read() public view returns (bytes32) {
-        var (wut, has) = peek();
+        (bytes32 wut, bool has) = peek();
         assert(time() < zzz);
         assert(has);
         return wut;
@@ -42,5 +41,4 @@ contract DSCache is DSValue
         zzz = Zzz;
         poke(wut);
     }
-
 }
